@@ -11,24 +11,34 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { loginAction } from "../action";
+import { useActionState } from "react";
+import Link from "next/link";
+
+const initialState = {
+  message: "",
+};
 
 export default function LoginPage() {
+  const [state, formAction, pending] = useActionState(loginAction, initialState);
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle>Login</CardTitle>
           <CardDescription>Enter your credentials to access your account</CardDescription>
+          <p aria-live="polite">{state?.message}</p>
         </CardHeader>
         <CardContent>
-          <form>
+          <form action={formAction}>
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="id_user">Email/Username</Label>
                 <Input
-                  id="email"
-                  type="email"
-                  name="email"
+                  id="id_user"
+                  type="text"
+                  name="id_user"
                   placeholder="you@example.com"
                   required
                 />
@@ -46,9 +56,9 @@ export default function LoginPage() {
         <CardFooter className="flex justify-center">
           <p className="text-sm text-gray-600">
             Don't have an account?
-            <a href="/signup" className="text-blue-600 hover:underline">
+            <Link href="/register" className="text-blue-600 hover:underline" disabled={pending}>
               Sign up
-            </a>
+            </Link>
           </p>
         </CardFooter>
       </Card>

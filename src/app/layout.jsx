@@ -1,6 +1,7 @@
 import "./globals.css";
 import { Suspense } from "react";
 import LoadingPage from "./loading";
+import NextTopLoader from "nextjs-toploader";
 
 export const metadata = {
   title: "Create Next App",
@@ -11,6 +12,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`antialiased`}>
+        <NextTopLoader />
         <Suspense fallback={<LoadingPage />}>{children}</Suspense>
       </body>
     </html>

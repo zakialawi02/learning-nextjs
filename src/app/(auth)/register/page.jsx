@@ -11,6 +11,7 @@ import {
   CardTitle,
   CardFooter,
 } from "@/components/ui/card";
+import Link from "next/link";
 
 export default function RegisterPage() {
   return (
@@ -58,9 +59,9 @@ export default function RegisterPage() {
         <CardFooter className="flex justify-center">
           <p className="text-sm text-gray-600">
             Already have an account?{" "}
-            <a href="/login" className="text-blue-600 hover:underline">
+            <Link href="/login" className="text-blue-600 hover:underline">
               Log in
-            </a>
+            </Link>
           </p>
         </CardFooter>
       </Card>
