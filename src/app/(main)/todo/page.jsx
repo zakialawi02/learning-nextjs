@@ -1,26 +1,57 @@
 "use client";
 
 import { Card, CardContent } from "@/components/ui/card";
-import { addTodo, getTodo, toggleTodo } from "./action";
+import { addTodo, deleteTodo, getTodo, toggleTodo } from "./action";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 import { Suspense, useActionState, useEffect, useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
+import { toast } from "sonner";
 
 const initialState = {
+  data: {
+    todo: "",
+  },
   message: "",
+  success: null,
 };
 
 const Note = () => {
   const [todos, setTodos] = useState([]);
   const [state, formAction, pending] = useActionState(addTodo, initialState);
 
+  const handleToggle = async (id) => {
+    const response = await toggleTodo(id);
+    if (response?.success) {
+      toast.success(`${response?.message}`);
+      getTodo().then((data) => {
+        setTodos(data);
+      });
+    }
+  };
+
+  const handleDelete = async (id) => {
+    const response = await deleteTodo(id);
+    if (response?.success) {
+      toast.success(`${response?.message}`);
+      getTodo().then((data) => {
+        setTodos(data);
+      });
+    }
+  };
+
   useEffect(() => {
     getTodo().then((data) => {
       setTodos(data);
     });
-  }, []);
+    if (state?.success === false) {
+      toast.error(`${state?.message}`);
+    }
+    if (state?.success === true) {
+      toast.success(`${state?.message}`);
+    }
+  }, [state]);
 
   return (
     <div className="min-h-screen p-8 bg-gradient-to-b from-black to-[#222] flex items-center justify-center">
@@ -31,6 +62,9 @@ const Note = () => {
               <div className="flex justify-between items-center">
                 <h1 className="text-2xl font-bold text-slate-100">Tasks</h1>
               </div>
+              {state?.success === false && !pending && (
+                <p className="text-red-600">{state?.message}</p>
+              )}
             </div>
 
             {/* Add Todo Form */}
@@ -39,6 +73,8 @@ const Note = () => {
                 type="text"
                 id="todo"
                 name="todo"
+                defaultValue={state?.data?.todo}
+                disabled={pending}
                 placeholder="Add a new task..."
                 className="flex-1 bg-slate-700 text-slate-100 placeholder-slate-400 border-slate-600 focus:border-sky-400 focus:ring-sky-400"
               />
@@ -59,11 +95,17 @@ const Note = () => {
                   className="group flex items-center gap-3 p-3 rounded-lg transition-all duration-300 bg-slate-700/30 hover:bg-slate-700/50"
                 >
                   <Checkbox
-                    checked={todo.completed}
-                    onCheckedChange={() => toggleTodo(todo.id)}
+                    checked={todo?.completed}
+                    onCheckedChange={() => handleToggle(todo?.id)}
                     className="transition-colors border-slate-500"
                   />
-                  <span className="flex-1 text-slate-100">{todo.text}</span>
+                  <span className="flex-1 text-slate-100">{todo?.text}</span>
+                  <Trash2
+                    className="cursor-pointer"
+                    color="#f87171"
+                    size={20}
+                    onClick={() => handleDelete(todo?.id)}
+                  />
                 </div>
               ))}
             </Suspense>

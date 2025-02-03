@@ -12,7 +12,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`antialiased`}>
-        <NextTopLoader />
+        <NextTopLoader showSpinner={false} />
         <Suspense fallback={<LoadingPage />}>{children}</Suspense>
       </body>
     </html>
